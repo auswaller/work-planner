@@ -9,6 +9,7 @@ let curSchedule = {
 };
 let timeEl = $("#currentDay");
 let plannerEl = $("#planner");
+let saveButton = $(".saveBtn");
 
 $(function () {
   intervalID = setInterval(function(){
@@ -18,6 +19,10 @@ $(function () {
 
   init();
 
+  saveButton.on("click", function(event){
+    
+  });
+
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
@@ -26,37 +31,22 @@ $(function () {
   // useful when saving the description in local storage?
   //
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-
 });
 
 function init(){
-  if(!getFromLocal()){
-    for(let i = 0; i < 24; i++){
-      curSchedule.text[i] = "";
-      curSchedule.era[i] = checkEra(i);
-      displayEvent(i);
+  getFromLocal();
+
+  for(let i = 0; i < 24; i++){
+    displayEvent(i);
   
-      console.log(i);
-      console.log(curSchedule.text[i]);
-      console.log(curSchedule.era[i]);
-    }
-  }
-  else{
-    for(let i = 0; i < 24; i++){
-      displayEvent(i);
-  
-      console.log(i);
-      console.log(curSchedule.text[i]);
-      console.log(curSchedule.era[i]);
-    }
+    console.log(i);
+    console.log(curSchedule.text[i]);
+    console.log(curSchedule.era[i]);
   }
 }
 
-function saveToLocal (info){
-  localStorage.setItem("schedule", info);
+function saveToLocal (){
+  localStorage.setItem("schedule", curSchedule);
 }
 
 function getFromLocal (){
@@ -83,14 +73,21 @@ function checkEra (timeslot){
   else{
     return "present";
   }
-  
 }
 
 function displayEvent (timeslot){
   let curHour = "#hour-" + timeslot;
+  let hourEl = plannerEl.children(curHour);
+  let textEl = plannerEl.children(curHour).children("textarea");
 
-  if(timeslot > 8 && timeslot < 18){
-    plannerEl.children(curHour).children("textarea").val(curSchedule.text[timeslot]);
-    plannerEl.children(curHour).addClass(curSchedule.era[timeslot]);
-  }
+    if(curSchedule.text[timeslot] == undefined){
+      curSchedule.text[timeslot] = "";
+    }
+
+    if(curSchedule.era[timeslot] == undefined){
+      curSchedule.era[timeslot] = checkEra(timeslot);
+    }
+
+    textEl.val(curSchedule.text[timeslot]);
+    hourEl.addClass(curSchedule.era[timeslot]);
 }
