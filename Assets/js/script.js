@@ -1,6 +1,3 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 let intervalID;
 let curTimeDate;
 let curSchedule = {
@@ -19,34 +16,34 @@ $(function () {
 
   init();
 
-  saveButton.on("click", function(event){
-    
+  saveButton.on("click", function(){
+    let buttonParent = $(this).parent();
+    let eventClickedId = buttonParent.attr("id");
+    let eventClickedText = buttonParent.children("textarea").val();
+
+    curSchedule.text[eventClickedId.match(/\d+/)[0]] = eventClickedText;
+    saveToLocal()
   });
-
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-
 });
 
 function init(){
   getFromLocal();
 
   for(let i = 0; i < 24; i++){
+    if(curSchedule.text[i] == undefined){
+      curSchedule.text[i] = "";
+    }
+
+    if(curSchedule.era[i] == undefined){
+      curSchedule.era[i] = checkEra(i);
+    }
+    
     displayEvent(i);
-  
-    console.log(i);
-    console.log(curSchedule.text[i]);
-    console.log(curSchedule.era[i]);
   }
 }
 
 function saveToLocal (){
-  localStorage.setItem("schedule", curSchedule);
+  localStorage.setItem("schedule", JSON.stringify(curSchedule));
 }
 
 function getFromLocal (){
@@ -54,10 +51,6 @@ function getFromLocal (){
 
   if(storedSchedule !== null){
     curSchedule = storedSchedule;
-    return true;
-  }
-  else{
-    return false;
   }
 }
 
@@ -80,14 +73,6 @@ function displayEvent (timeslot){
   let hourEl = plannerEl.children(curHour);
   let textEl = plannerEl.children(curHour).children("textarea");
 
-    if(curSchedule.text[timeslot] == undefined){
-      curSchedule.text[timeslot] = "";
-    }
-
-    if(curSchedule.era[timeslot] == undefined){
-      curSchedule.era[timeslot] = checkEra(timeslot);
-    }
-
-    textEl.val(curSchedule.text[timeslot]);
-    hourEl.addClass(curSchedule.era[timeslot]);
+  textEl.val(curSchedule.text[timeslot]);
+  hourEl.addClass(curSchedule.era[timeslot]);
 }
