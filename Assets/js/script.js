@@ -13,7 +13,7 @@ let plannerEl = $("#planner");
 $(function () {
   intervalID = setInterval(function(){
     curTimeDate = dayjs();
-    timeEl.text(curTimeDate.format("dddd, MMMM DD, YYYY - hh:mm A"));
+    timeEl.text(curTimeDate.format("dddd, MMMM DD, YYYY - hh:mm:ss A"));
   }, 1000);
 
   init();
@@ -26,12 +26,6 @@ $(function () {
   // useful when saving the description in local storage?
   //
 
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
@@ -39,8 +33,26 @@ $(function () {
 });
 
 function init(){
-  getFromLocal();
+  if(!getFromLocal()){
+    for(let i = 0; i < 24; i++){
+      curSchedule.text[i] = "";
+      curSchedule.era[i] = checkEra(i);
+      displayEvent(i);
   
+      console.log(i);
+      console.log(curSchedule.text[i]);
+      console.log(curSchedule.era[i]);
+    }
+  }
+  else{
+    for(let i = 0; i < 24; i++){
+      displayEvent(i);
+  
+      console.log(i);
+      console.log(curSchedule.text[i]);
+      console.log(curSchedule.era[i]);
+    }
+  }
 }
 
 function saveToLocal (info){
@@ -52,17 +64,10 @@ function getFromLocal (){
 
   if(storedSchedule !== null){
     curSchedule = storedSchedule;
+    return true;
   }
   else{
-    for(let i = 0; i < 24; i++){
-      curSchedule.text[i] = "";
-      curSchedule.era[i] = checkEra(i);
-      setEvent(i);
-
-      console.log(i);
-      console.log(curSchedule.text[i]);
-      console.log(curSchedule.era[i]);
-    }
+    return false;
   }
 }
 
@@ -81,6 +86,11 @@ function checkEra (timeslot){
   
 }
 
-function setEvent (event){
-  
+function displayEvent (timeslot){
+  let curHour = "#hour-" + timeslot;
+
+  if(timeslot > 8 && timeslot < 18){
+    plannerEl.children(curHour).children("textarea").val(curSchedule.text[timeslot]);
+    plannerEl.children(curHour).addClass(curSchedule.era[timeslot]);
+  }
 }
