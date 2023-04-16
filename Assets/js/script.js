@@ -3,17 +3,17 @@
 // in the html.
 let intervalID;
 let curTimeDate;
-let curSchedule;
-
+let curSchedule= [];
+let timeEl = $("#currentDay");
+let plannerEl = $("#planner");
 
 $(function () {
-  let timeEl = $("#currentDay");
-
-
   intervalID = setInterval(function(){
     curTimeDate = dayjs();
     timeEl.text(curTimeDate.format("dddd, MMMM DD, YYYY - hh:mm A"));
   }, 1000);
+
+  init();
 
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -35,10 +35,18 @@ $(function () {
 
 });
 
+function init(){
+  
+}
+
 function saveToLocal (info){
   localStorage.setItem("schedule", info);
 }
 
 function getFromLocal (){
   curSchedule = localStorage.getItem("schedule");
+}
+
+function setEvent (){
+
 }
