@@ -6,7 +6,7 @@ This is a work planner that will display a standard business day's schedule. You
 
 ## Screenshot
 
-![Screenshot of the deployed work planner website](./assets/images/Screenshot.png)
+![Screenshot of the deployed work planner website](./Assets/images/Screenshot.png)
 
 ## Link
 
