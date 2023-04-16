@@ -3,7 +3,10 @@
 // in the html.
 let intervalID;
 let curTimeDate;
-let curSchedule= [];
+let curSchedule = {
+  text:[],
+  era:[]
+};
 let timeEl = $("#currentDay");
 let plannerEl = $("#planner");
 
@@ -36,6 +39,7 @@ $(function () {
 });
 
 function init(){
+  getFromLocal();
   
 }
 
@@ -44,9 +48,39 @@ function saveToLocal (info){
 }
 
 function getFromLocal (){
-  curSchedule = localStorage.getItem("schedule");
+  let storedSchedule = JSON.parse(localStorage.getItem("schedule"));
+
+  if(storedSchedule !== null){
+    curSchedule = storedSchedule;
+  }
+  else{
+    for(let i = 0; i < 24; i++){
+      curSchedule.text[i] = "";
+      curSchedule.era[i] = checkEra(i);
+      setEvent(i);
+
+      console.log(i);
+      console.log(curSchedule.text[i]);
+      console.log(curSchedule.era[i]);
+    }
+  }
 }
 
-function setEvent (){
+function checkEra (timeslot){
+  let curHour = dayjs().format("HH");
 
+  if(curHour > timeslot){
+    return "past";
+  }
+  else if(curHour < timeslot){
+    return "future";
+  }
+  else{
+    return "present";
+  }
+  
+}
+
+function setEvent (event){
+  
 }
